@@ -10,6 +10,15 @@ class ChatRepository:
 
     @handle_db_errors
     async def add_message(self, user_id: int, role: str, content: str) -> ChatMessage:
+        """
+        Добавление нового сообщения в историю диалога.
+        Args:
+            user_id: int - ID пользователя
+            role: str - Роль отправителя (user/assistant)
+            content: str - Текст сообщения
+        Return:
+            ChatMessage: Объект сохранённого сообщения с присвоенным ID
+        """
         msg = ChatMessage(user_id=user_id, role=role, content=content)
         self._session.add(msg)
 
@@ -19,6 +28,14 @@ class ChatRepository:
     
     @handle_db_errors
     async def get_messages_by_user(self, user_id: int, count_msg: int | None = None) -> list[ChatMessage]:
+        """
+        Получение истории сообщений пользователя.
+        Args:
+            user_id: int - ID пользователя
+            count_msg: int | None - Максимальное количество последних сообщений (опционально)
+        Return:
+            list[ChatMessage]: Список сообщений в хронологическом порядке
+        """
         stmt = (
             select(ChatMessage)
             .where(ChatMessage.user_id == user_id)
@@ -35,6 +52,13 @@ class ChatRepository:
     
     @handle_db_errors
     async def delete_history_by_user(self, user_id:int) -> int:
+        """
+        Удаление всех сообщений пользователя.
+        Args:
+            user_id: int - ID пользователя
+        Return:
+            int: Количество удалённых сообщений
+        """
         stmt = (
             delete(ChatMessage)
             .where(ChatMessage.user_id == user_id)

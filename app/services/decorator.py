@@ -1,9 +1,10 @@
 import functools
 from httpx import HTTPStatusError
+from typing import Callable, Awaitable, Any
 
 from app.core.errors import ServiceUnavailableError
 
-def handle_service_errors(func):
+def handle_service_errors(func: Callable[..., Awaitable[Any]]) -> Callable[..., Awaitable[Any]]:
     @functools.wraps(func)
     async def wrapper(self, *args, **kwargs):
         try:

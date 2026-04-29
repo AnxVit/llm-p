@@ -19,6 +19,14 @@ class ChatUsecase:
         self._service = service
 
     async def ask(self, req: ChatRequest, user_id: int) -> ChatResponse:
+        """
+        Отправка сообщения в LLM и сохранение истории диалога.
+        Args:
+            req: ChatRequest - Запрос с полем prompt и настройками
+            user_id: int - ID пользователя, отправляющего сообщение
+        Return:
+            ChatResponse: Ответ с полем answer от LLM
+        """
         messages = await self._repo.get_messages_by_user(user_id, req.max_history)
 
         openAIReq = convert_message_in_openai_format(messages, req)
@@ -30,6 +38,13 @@ class ChatUsecase:
 
         
     async def get_history(self, user_id: int) -> ChatHistory:
+        """
+        Получение истории сообщений пользователя.
+        Args:
+            user_id: int - ID пользователя
+        Return:
+            ChatHistory: Объект со списком сообщений пользователя
+        """
         messages = await self._repo.get_messages_by_user(user_id)
 
         chat_messages = [Message.model_validate(msg) for msg in messages]
@@ -37,6 +52,13 @@ class ChatUsecase:
         return ChatHistory(messages=chat_messages)
 
     async def delete_history(self, user_id: int) -> DeletedResponse:
+        """
+        Удаление истории сообщений пользователя.
+        Args:
+            user_id: int - ID пользователя
+        Return:
+            DeletedResponse: Объект с информацией о результате удаления
+        """
         count_deleted_rows = await self._repo.delete_history_by_user(user_id)
         if count_deleted_rows == 0:
             return DeletedResponse(message="empty history")
@@ -44,6 +66,14 @@ class ChatUsecase:
 
 
 def convert_message_in_openai_format(messages: list[ChatMessage], req: ChatRequest) -> Dict[str, Union[str, float, list]]:
+    """
+    Конвертация истории сообщений и запроса в формат OpenAI API.
+    Args:
+        messages: list[ChatMessage] - Список сообщений из истории диалога
+        req: ChatRequest - Запрос с полями prompt, system, temperature
+    Return:
+        Dict[str, Union[str, float, list]]: Словарь с данными для отправки в OpenAI API
+    """
     openAIMessages = []
     if req.system is not None:
         openAIMessages.append({

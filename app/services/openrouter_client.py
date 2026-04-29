@@ -29,6 +29,13 @@ class OpenRouterClient:
     
     @handle_service_errors
     async def post_chat(self, req: Dict[str, Union[str, float, list]]) -> str:
+        """
+        Отправка запроса к OpenRouter API и получение ответа от LLM.
+        Args:
+            req: Dict[str, Union[str, float, list]] - Запрос в формате OpenAI API
+        Return:
+            str: Текст ответа от модели
+        """
         if self._client is None:
             raise RuntimeError("OpenRouterClient must be used as async context manager")
         
@@ -43,6 +50,13 @@ class OpenRouterClient:
         return self._extract_content_from_response(response_json)
 
     def _extract_content_from_response(self, data: Dict[str, Union[str, float, list]]) -> str:
+        """
+        Извлечение текста ответа из сырого ответа OpenRouter API.
+        Args:
+            data: Dict[str, Union[str, float, list]] - Сырой JSON ответ от OpenRouter
+        Return:
+            str: Извлечённый текст ответа модели
+        """
         choices = data.get('choices', [])
         if not choices:
             raise Exception("empty choices in openrouter respone")

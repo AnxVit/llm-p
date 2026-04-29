@@ -49,6 +49,13 @@ class ServiceUnavailableError(AppException):
     
 
 def register_exception_handlers(app):
+    """
+    Регистрация глобальных обработчиков исключений для FastAPI приложения.
+    Args:
+        app: FastAPI - Экземпляр приложения FastAPI
+    Return:
+        None
+    """
     @app.exception_handler(AppException)
     async def app_error_handler(request: Request, exc: AppException):
         return JSONResponse(

@@ -17,6 +17,14 @@ class AuthUsecase:
         self._repo = repo
     
     async def register(self, email: str, password: str) -> None:
+        """
+        Регистрация нового пользователя в системе.
+        Args:
+            email: str - Email адрес пользователя
+            password: str - Пароль для аккаунта
+        Return:
+            UserPublic: Общедоступные данные зарегистрированного пользователя
+        """
         user = await self._repo.get_user_by_email(email)
         if user:
             raise ConflictError(message="email already exists")
@@ -27,6 +35,14 @@ class AuthUsecase:
         return UserPublic.model_validate(user)
 
     async def login(self, email: str, password: str) -> str:
+        """
+        Аутентификация пользователя и выдача JWT токена доступа.
+        Args:
+            email: str - Email адрес пользователя
+            password: str - Пароль в открытом виде
+        Return:
+            TokenResponse: Объект с access token
+        """
         user = await self._repo.get_user_by_email(email)
         if not user:
             raise UnauthorizedError(message="user does't exists")
@@ -38,7 +54,14 @@ class AuthUsecase:
 
         return TokenResponse(access_token=token)
     
-    async def user_by_id(self, id): 
+    async def user_by_id(self, id: int) -> UserPublic: 
+        """
+        Получение публичных данных пользователя по ID.
+        Args:
+            id: int - Уникальный идентификатор пользователя
+        Return:
+            UserPublic: Общедоступные данные пользователя
+        """
         user = await self._repo.get_user_by_id(id)
         if not user:
             raise NotFoundError(message="user not found")

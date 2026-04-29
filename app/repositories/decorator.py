@@ -1,10 +1,11 @@
 import functools
+from typing import Callable, Awaitable, Any
 
 from sqlalchemy.exc import SQLAlchemyError
 
 from app.core.errors import ServiceUnavailableError
 
-def handle_db_errors(func):
+def handle_db_errors(func: Callable[..., Awaitable[Any]]) -> Callable[..., Awaitable[Any]]:
     @functools.wraps(func)
     async def wrapper(self, *args, **kwargs):
         try:

@@ -22,7 +22,13 @@ async def lifespan(app: FastAPI):
     await engine.dispose()
 
 
-def create_app():
+def create_app() -> FastAPI:
+    """
+    Создаёт и настраивает экземпляр приложения FastAPI.
+    
+    Returns:
+        FastAPI: Настроенное приложение FastAPI
+    """
     app = FastAPI(
         title=settings.APP_NAME,
         lifespan=lifespan

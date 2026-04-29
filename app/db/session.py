@@ -2,7 +2,13 @@ from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, Asyn
 
 from app.core.config import settings
 
-def get_database_usrl():
+def get_database_usrl() -> str:
+    """
+    Формирование URL подключения к базе данных SQLite.
+    Args: -
+    Return:
+        str: URL для подключения к SQLite с поддержкой асинхронного драйвера aiosqlite
+    """
     return f"sqlite+aiosqlite:///{settings.SQLITE_PATH}"
 
 engine = create_async_engine(
