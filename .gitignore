@@ -11,3 +11,6 @@ wheels/
 
 # Configuration file
 .env
+
+# Linter
+.ruff_cache
